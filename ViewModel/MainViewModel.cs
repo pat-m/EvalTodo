@@ -1,4 +1,6 @@
 using GalaSoft.MvvmLight;
+using System;
+using System.Collections.ObjectModel;
 
 namespace EvalTodo.ViewModel
 {
@@ -16,19 +18,21 @@ namespace EvalTodo.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
+        public ObservableCollection<Task> Tasks { get; set; }
+
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+            this.Tasks = new ObservableCollection<Task>();
+
+            if (IsInDesignMode) {
+                this.Tasks.Add(new Task { Name = "Tache1", DateTask = DateTime.Now, IsDone = false });
+                this.Tasks.Add(new Task { Name = "Tache2", DateTask = DateTime.Now, IsDone = true });
+            }
+           
+            else {
+                this.Tasks.Add(new Task { Name = "Tache1", DateTask = DateTime.Now, IsDone = false });
+                this.Tasks.Add(new Task { Name = "Tache2", DateTask = DateTime.Now, IsDone = true });
+            }
         }
     }
 }

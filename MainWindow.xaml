@@ -5,8 +5,74 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvalTodo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        DataContext="{Binding Main, Source= {StaticResource Locator}}"
+        Title="My Todo List" Topmost="True" Height="450" Width="400" MinWidth="400" MaxWidth="400">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="10"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <!-- Titre -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Image Margin="5" Source="images/checked.png"></Image>
+            <TextBlock VerticalAlignment="Center" FontSize="16" Text="My todo list"></TextBlock>
+        </StackPanel>
+        <!-- Text field -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBox VerticalAlignment="Center" MinWidth="235" MinHeight="30" Margin="5,0,5,0"  FontSize="16"></TextBox>
+            <DatePicker Margin="5,0,5,0" Width="100" DisplayDateStart="{x:Static sys:DateTime.Now}"></DatePicker>
+            <Image Margin="5" Source="images/add.png"></Image>
+        </StackPanel>
+        <Separator Grid.Row="2" Width="200"  BorderBrush="Black" BorderThickness="1" Margin="96,2"/>
+
+
+
+        <ScrollViewer Grid.Row="3" >
+            <StackPanel Orientation="Vertical">
+                <ListBox Height="Auto" ItemsSource="{Binding Tasks}" HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="10,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="15" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Name}" Grid.Column="0" />
+                                <TextBlock FontSize="10" Grid.Column="1" Text="{Binding DateTask, StringFormat='dd MMMM yyyy', ConverterCulture='fr-FR'}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Text" Value="{Binding DateTask, StringFormat='dd MMMM yyyy', ConverterCulture='fr-FR'}"></Setter>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DateTask}" Value="{x:Static sys:DateTime.Now}">
+                                                    <Setter Property="Text" Value="Aujourd'hui"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <CheckBox IsChecked="{Binding IsDone}" Grid.Column="2" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <Separator Grid.Row="4" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1" Margin="0,2,0,0"/>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90"></ColumnDefinition>
+                <ColumnDefinition Width="295"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left" Source="images/trash.png"/>
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" Text="Vider la liste"></TextBlock>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="14" Text="{Binding Tasks.Count}"/>
+        </Grid>
     </Grid>
 </Window>
