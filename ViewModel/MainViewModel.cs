@@ -25,7 +25,30 @@ namespace EvalTodo.ViewModel
     public class MainViewModel : ViewModelBase
     {
         public ObservableCollection<Task> Tasks { get; set; }
-        public int TasksDone { get; set; }
+        private int _TasksDone;
+        public int TasksDone {
+            get
+            {
+                return this._TasksDone;
+            }
+            set
+            {
+                this._TasksDone = value;
+                RaisePropertyChanged();
+            }
+        }
+        private Task _SelectedTask;
+        public Task SelectedTask {
+            get
+            {
+                return this._SelectedTask;
+            }
+            set
+            {
+                this._SelectedTask = value;
+                RaisePropertyChanged();
+            }
+        }
         public ICommand AddCommand { get; set; }
         public ICommand DeleteAllCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
@@ -59,7 +82,7 @@ namespace EvalTodo.ViewModel
             this.Tasks = new ObservableCollection<Task>();
             this.SelectedDate = DateTime.Now;
             this.Name = "";
-            //this.Tasks.CollectionChanged += refreshTasksDone;
+            this.Tasks.CollectionChanged += refreshTasksDone;
             AddCommand = new RelayCommand(() => AddClick());
             DeleteAllCommand = new RelayCommand(() => DeleteClickAll());
             DeleteCommand = new RelayCommand(() => DeleteClick());
@@ -89,13 +112,15 @@ namespace EvalTodo.ViewModel
             this.Tasks.Clear();
         }
 
-        private void DeleteClick() { 
+        private void DeleteClick() {
+            Console.WriteLine(this.SelectedTask.Name);
+            this.Tasks.Remove(this.SelectedTask);
         }
 
-        /*private void refreshTasksDone(object sender, NotifyCollectionChangedEventArgs e)
+        private void refreshTasksDone(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Console.WriteLine("POUET");
             this.TasksDone = this.Tasks.Where(t => t.IsDone == true).Count();
         }
-        */
     }
 }

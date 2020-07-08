@@ -30,35 +30,61 @@
             </Button>
         </StackPanel>
         <Separator Grid.Row="2" Width="200"  BorderBrush="Black" BorderThickness="1" Margin="96,2"/>
-
-
-
         <ScrollViewer Grid.Row="3" >
             <StackPanel Orientation="Vertical">
-                <ListBox Height="Auto" ItemsSource="{Binding Tasks}" HorizontalContentAlignment="Stretch">
+                <ListBox Height="Auto" ItemsSource="{Binding Tasks}" SelectedItem="{Binding SelectedTask}" HorizontalContentAlignment="Stretch">
                     <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="10,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="100" />
-                                    <ColumnDefinition Width="15" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Name}" Grid.Column="0" />
-                                <TextBlock FontSize="10" Grid.Column="1" Text="{Binding DateTask, StringFormat='dd MMMM yyyy', ConverterCulture='fr-FR'}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="Text" Value="{Binding DateTask, StringFormat='dd MMMM yyyy', ConverterCulture='fr-FR'}"></Setter>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding DateTask}" Value="{x:Static sys:DateTime.Now}">
-                                                    <Setter Property="Text" Value="Aujourd'hui"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                                <CheckBox IsChecked="{Binding IsDone}" Grid.Column="2" />
-                            </Grid>
+                        <DataTemplate x:Name="Item">
+                            <Border BorderThickness="1" BorderBrush="gray" CornerRadius="5">
+                                <Grid Margin="10,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="15" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="15" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock FontSize="10" Margin="5,0,5,0" Text="{Binding Name}" Grid.Column="1">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=doneCheck, Path=IsChecked}" Value="True">
+                                                        <Setter Property="Foreground" Value="LightGray" />
+                                                        <Setter Property="TextDecorations" Value="Strikethrough"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock FontSize="10" Grid.Column="2" Text="{Binding DateTask, StringFormat='dd MMMM yyyy', ConverterCulture='fr-FR'}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Text" Value="{Binding DateTask, StringFormat='dd MMMM yyyy', ConverterCulture='fr-FR'}"></Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=doneCheck, Path=IsChecked}" Value="True">
+                                                        <Setter Property="Foreground" Value="LightGray" />
+                                                        <Setter Property="TextDecorations" Value="Strikethrough"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <CheckBox IsChecked="{Binding IsDone}" Name="doneCheck" Grid.Column="0" />
+                                    <Button Background="White" BorderThickness="0" Grid.Column="3" Height="15" Name="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding .}">
+                                        <Image Source="images/close.png">
+                                            <Image.Style>
+                                                <Style TargetType="Image">
+                                                    <Setter Property="Opacity" Value="1"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="False">
+                                                            <Setter Property="Opacity" Value="0.2"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+                                    </Button>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -69,12 +95,14 @@
         <Separator Grid.Row="4" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1" Margin="0,2,0,0"/>
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="90"></ColumnDefinition>
-                <ColumnDefinition Width="295"></ColumnDefinition>
+                <ColumnDefinition Width="95"></ColumnDefinition>
+                <ColumnDefinition Width="290"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left" Source="images/trash.png"/>
+            <Button Grid.Column="0" BorderThickness="0" Background="White" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left" Command="{Binding DeleteAllCommand}">
+                <Image Source="images/trash.png"/>
+            </Button>
             <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" Text="Vider la liste"></TextBlock>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="14">
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="14" Margin="0,0,5,0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0}/{1} tâches">
                         <Binding Path="TasksDone"/>
